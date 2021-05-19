@@ -20,12 +20,6 @@ blocks.forEach(block => {
 generateBlock.addEventListener('click', event => {
     blocks.push(block(blocks.length))
     generator.innerHTML += block(blocks.length - 1)
-
-    const label_0 = document.getElementById('label_0')
-    const input_0 = document.getElementById('input_0')
-
-    const label_1 = document.getElementById('label_1')
-    const input_1 = document.getElementById('input_1')
 })
 
 
@@ -35,27 +29,20 @@ let form = {}
 
 formEl.addEventListener('submit', event => {
     event.preventDefault()
-
-    // for (let formGroup of generator.children) {
-    //     for (let elem of formGroup.children) {
-    //         console.log(elem, j)
-    //     }
-    // }
-
     const blocksAll = generator.children
 
     for (let i = 0; i < blocksAll.length; i++) {
+        let key, value;
         for (let j = 0; j < blocksAll[i].children.length; j++) {
-            console.log(blocksAll[i].children[j])
+            // console.log(blocksAll[i].children[j].getAttribute('id'))
+            if (j % 2 === 0) {
+                key = blocksAll[i].children[j].getAttribute('id')
+            } else {
+                value = blocksAll[i].children[j].value
+            }            
         }
+        form[key] = value
     }
-
-    let form = {
-        label_0: input_0.value,
-        label_1: input_1.value,
-    }
-
-    
 
     const formJSON = JSON.stringify(form)
     jsonPlaceholder.value = formJSON
