@@ -12,18 +12,32 @@ const block = num => `
 `
 
 let blocks = [block(0), block(1)]
-
-blocks.forEach(block => {
-    generator.innerHTML += block
-})
+blocks.forEach(block => generator.innerHTML += block)
 
 generateBlock.addEventListener('click', () => {
     blocks.push(block(blocks.length))
     generator.innerHTML += block(blocks.length - 1)
 })
 
+formEl.addEventListener('submit', event => {
+    event.preventDefault()
+    const form = formData()
+    jsonPlaceholder.value = JSON.stringify(form)
+    copyBtn.disabled = false
+    jsonPlaceholder.style.height = jsonPlaceholder.scrollHeight + 'px'
+})
 
-function formObject (form = {}) {
+copyBtn.addEventListener('click', () => {
+    jsonPlaceholder.select()
+    jsonPlaceholder.setSelectionRange(0, 99999)
+    document.execCommand('copy')
+    copyBtn.textContent = 'COPIED!'
+    setTimeout(() => {
+        copyBtn.textContent = 'COPY JSON'
+    }, 2000)
+})
+
+function formData (form = {}) {
     const blocksAll = generator.children
 
     for (let i = 0; i < blocksAll.length; i++) {
@@ -39,22 +53,3 @@ function formObject (form = {}) {
     }
     return form
 }
-
-
-formEl.addEventListener('submit', event => {
-    event.preventDefault()
-    const form = formObject()
-    jsonPlaceholder.value = JSON.stringify(form)
-    copyBtn.disabled = false
-    jsonPlaceholder.style.height = jsonPlaceholder.scrollHeight + 'px'
-})
-
-copyBtn.addEventListener('click', () => {
-    jsonPlaceholder.select()
-    jsonPlaceholder.setSelectionRange(0, 99999)
-    document.execCommand('copy')
-    copyBtn.textContent = 'COPIED!'
-    setTimeout(() => {
-        copyBtn.textContent = 'COPY JSON'
-    }, 2000)
-})
