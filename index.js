@@ -7,7 +7,7 @@ const copyBtn = document.getElementById('copy')
 const block = num => `
     <div class="form-group">
         <div id="label_${num}" class="p-1 m-1" contentEditable="true">Key ${num}</div>
-        <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" placeholder="Enter value">
+        <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" placeholder="Enter value" autocomplete="off">
     </div>
 `
 
@@ -17,7 +17,7 @@ blocks.forEach(block => {
     generator.innerHTML += block
 })
 
-generateBlock.addEventListener('click', event => {
+generateBlock.addEventListener('click', () => {
     blocks.push(block(blocks.length))
     generator.innerHTML += block(blocks.length - 1)
 })
@@ -46,6 +46,7 @@ formEl.addEventListener('submit', event => {
     const form = formObject()
     jsonPlaceholder.value = JSON.stringify(form)
     copyBtn.disabled = false
+    jsonPlaceholder.style.height = jsonPlaceholder.scrollHeight + 'px'
 })
 
 copyBtn.addEventListener('click', () => {
