@@ -34,7 +34,6 @@ formEl.addEventListener('submit', event => {
     for (let i = 0; i < blocksAll.length; i++) {
         let key, value;
         for (let j = 0; j < blocksAll[i].children.length; j++) {
-            // console.log(blocksAll[i].children[j].getAttribute('id'))
             if (j % 2 === 0) {
                 key = blocksAll[i].children[j].getAttribute('id')
             } else {
