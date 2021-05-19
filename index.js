@@ -6,8 +6,8 @@ const copyBtn = document.getElementById('copy')
 
 const block = num => `
     <div class="form-group">
-        <div id="label_${num}" class="p-1 m-1" contentEditable="true">Key-${num}</div>
-        <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" placeholder="Value for key-${num}">
+        <div id="label_${num}" class="p-1 m-1" contentEditable="true">Key ${num}</div>
+        <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" placeholder="Enter value">
     </div>
 `
 
@@ -23,29 +23,28 @@ generateBlock.addEventListener('click', event => {
 })
 
 
-
-
-let form = {}
-
-formEl.addEventListener('submit', event => {
-    event.preventDefault()
+function formObject (form = {}) {
     const blocksAll = generator.children
 
     for (let i = 0; i < blocksAll.length; i++) {
         let key, value;
         for (let j = 0; j < blocksAll[i].children.length; j++) {
             if (j % 2 === 0) {
-                key = blocksAll[i].children[j].getAttribute('id')
+                key = blocksAll[i].children[j].textContent
             } else {
                 value = blocksAll[i].children[j].value
             }            
         }
         form[key] = value
     }
+    return form
+}
 
-    const formJSON = JSON.stringify(form)
-    jsonPlaceholder.value = formJSON
 
+formEl.addEventListener('submit', event => {
+    event.preventDefault()
+    const form = formObject()
+    jsonPlaceholder.value = JSON.stringify(form)
     copyBtn.disabled = false
 })
 
