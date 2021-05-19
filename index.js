@@ -1,4 +1,4 @@
-const formEl = document.getElementById('scrum-form')
+const formEl = document.getElementById('dynamic-form')
 const generator = document.getElementById('generator')
 const generateBlock = document.getElementById('btn-generate')
 const jsonPlaceholder = document.getElementById('json')
