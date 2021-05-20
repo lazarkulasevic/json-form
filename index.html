@@ -10,6 +10,17 @@
         body {
             min-height: 100vh;
         }
+        .remove-block {
+            cursor: pointer;
+            padding: 5px 6px;
+            line-height: 1;
+            border-radius: 20px;
+            transition: background-color 0.2s, color 0.1s;
+        }
+        .remove-block:hover {
+            color: #fff;
+            background-color: rgb(255, 79, 79);
+        }
         #json {
             resize: none;
             overflow: hidden;
@@ -32,7 +43,7 @@
     </style>
 </head>
 <body class="d-flex align-items-center justify-content-center">
-    <div class="container col-lg-10">
+    <div class="container col-lg-10 col-xl-6">
         <div class="card m-4">
             <div class="card-header">
                 <h3>Dynamic form</h3>
