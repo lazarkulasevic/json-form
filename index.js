@@ -10,13 +10,22 @@ const block = num => `
         <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" placeholder="Enter value" autocomplete="off">
     </div>
 `
+const formSaved = JSON.parse(localStorage.getItem('dynamic-form'))
 
+if (!formSaved) {
+    saveFormLocalStorage()
+}
+
+// init form
 let blocks = [block(0), block(1)]
 blocks.forEach(block => generator.innerHTML += block)
+
+// console.log(Object.keys(formSaved).length)
 
 generateBlock.addEventListener('click', () => {
     blocks.push(block(blocks.length))
     generator.innerHTML += block(blocks.length - 1)
+    saveFormLocalStorage()
 })
 
 formEl.addEventListener('submit', event => {
@@ -37,6 +46,14 @@ copyBtn.addEventListener('click', () => {
     }, 2000)
 })
 
+generator.addEventListener('click', event => {
+    if (event.target.tagName === 'INPUT') {
+        event.target.addEventListener('blur', () => {
+            console.log('blurrr')
+        })
+    }
+})
+
 function formData (form = {}) {
     const blocksAll = generator.children
 
@@ -52,4 +69,8 @@ function formData (form = {}) {
         form[key] = value
     }
     return form
+}
+
+function saveFormLocalStorage () {
+    localStorage.setItem('dynamic-form', JSON.stringify(formData()))
 }
