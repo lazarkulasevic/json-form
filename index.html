@@ -14,10 +14,25 @@
             resize: none;
             overflow: hidden;
         }
+        .button-wrapper button {
+            display: block;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        @media (min-width: 576px) {
+            .button-wrapper {
+                display: flex;
+                justify-content: space-between;
+            }
+            .button-wrapper button {
+                width: unset;
+                margin-bottom: 0;
+            }
+        }
     </style>
 </head>
 <body class="d-flex align-items-center justify-content-center">
-    <div class="container">
+    <div class="container col-lg-10">
         <div class="card m-4">
             <div class="card-header">
                 <h3>Dynamic form</h3>
@@ -26,7 +41,7 @@
             <div class="card-body">
                 <form id="dynamic-form">
                     <div id="generator"></div>
-                    <div class="d-flex justify-content-between mt-4">
+                    <div class="button-wrapper mt-4">
                         <button type="button" class="btn btn-success" id="btn-generate">Add +</button>
                         <button type="submit" class="btn btn-primary">Generate JSON</button>
                     </div>
