@@ -5,27 +5,24 @@ const jsonPlaceholder = document.getElementById('json')
 const copyBtn = document.getElementById('copy')
 
 const block = num => `
-    <div class="form-group">
-        <div id="label_${num}" class="p-1 m-1" contentEditable="true">Key ${num}</div>
+    <div class="form-group" data-block="block_${num}">
+        <span class="remove-block float-right">✕</span>
+        <div id="label_${num}" class="p-1 m-1" contentEditable="true">${num}. Key</div>
         <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" placeholder="Enter value" autocomplete="off">
     </div>
 `
 const formSaved = JSON.parse(localStorage.getItem('dynamic-form'))
 
 if (!formSaved) {
-    saveFormLocalStorage()
+    initForm()
+    saveFormInLocalStorage()
 }
-
-// init form
-let blocks = [block(0), block(1)]
-blocks.forEach(block => generator.innerHTML += block)
-
-// console.log(Object.keys(formSaved).length)
+console.log(formSaved)
 
 generateBlock.addEventListener('click', () => {
     blocks.push(block(blocks.length))
     generator.innerHTML += block(blocks.length - 1)
-    saveFormLocalStorage()
+    saveFormInLocalStorage()
 })
 
 formEl.addEventListener('submit', event => {
@@ -47,12 +44,23 @@ copyBtn.addEventListener('click', () => {
 })
 
 generator.addEventListener('click', event => {
-    if (event.target.tagName === 'INPUT') {
-        event.target.addEventListener('blur', () => {
-            console.log('blurrr')
-        })
+    switch (event.target.tagName) {
+        case 'INPUT':
+            console.log('input')
+            break;
+        case 'DIV':
+            console.log('div')
+            break;
+        case 'SPAN':
+            console.log('span')
+            break;
     }
 })
+
+function initForm () {
+    let blocks = [block(0), block(1)]
+    blocks.forEach(block => generator.innerHTML += block)
+}
 
 function formData (form = {}) {
     const blocksAll = generator.children
@@ -60,9 +68,9 @@ function formData (form = {}) {
     for (let i = 0; i < blocksAll.length; i++) {
         let key, value;
         for (let j = 0; j < blocksAll[i].children.length; j++) {
-            if (j % 2 === 0) {
+            if (j % 3 === 1) {
                 key = blocksAll[i].children[j].textContent
-            } else {
+            } else if (j % 3 === 2) {
                 value = blocksAll[i].children[j].value
             }            
         }
@@ -71,6 +79,6 @@ function formData (form = {}) {
     return form
 }
 
-function saveFormLocalStorage () {
+function saveFormInLocalStorage () {
     localStorage.setItem('dynamic-form', JSON.stringify(formData()))
 }
