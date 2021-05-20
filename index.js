@@ -4,20 +4,32 @@ const generateBlock = document.getElementById('btn-generate')
 const jsonPlaceholder = document.getElementById('json')
 const copyBtn = document.getElementById('copy')
 
-const block = num => `
+const block = (num, key, value) => `
     <div class="form-group" data-block="block_${num}">
         <span class="remove-block float-right">✕</span>
-        <div id="label_${num}" class="p-1 m-1" contentEditable="true">${num}. Key</div>
-        <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" placeholder="Enter value" autocomplete="off">
+        <div id="label_${num}" class="pl-1 m-1 mr-5" contentEditable="true">${key ?? 'Key ' + (num + 1)}</div>
+        <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" value="${value ?? ''}" placeholder="Enter value" autocomplete="off">
     </div>
 `
 const formSaved = JSON.parse(localStorage.getItem('dynamic-form'))
 
-if (!formSaved) {
-    initForm()
+let blocks = [block(0, 'Key 1'), block(1, 'Key 2')]
+
+if (formSaved) {
+    let counter = 0
+    blocks = []
+    for (const prop in formSaved) {
+        blocks.push(block(counter, prop, formSaved[prop]))
+        counter++
+    }
+
+    initForm(blocks)
+    saveFormInSessionStorage()
+
+} else {
+    initForm(blocks)
     saveFormInLocalStorage()
 }
-console.log(formSaved)
 
 generateBlock.addEventListener('click', () => {
     blocks.push(block(blocks.length))
@@ -45,24 +57,32 @@ copyBtn.addEventListener('click', () => {
 
 generator.addEventListener('click', event => {
     switch (event.target.tagName) {
-        case 'INPUT':
-            console.log('input')
-            break;
         case 'DIV':
-            console.log('div')
-            break;
+            onBlur(event.target)
+            break
+        case 'INPUT':
+            onBlur(event.target, false)
+            break
         case 'SPAN':
-            console.log('span')
-            break;
+            console.log('remove block')
+            break
     }
 })
 
-function initForm () {
-    let blocks = [block(0), block(1)]
+function onBlur (elem, localStorage = true) {
+    elem.addEventListener('blur', () => {
+        if (localStorage) {
+            saveFormInLocalStorage()
+        }
+        saveFormInSessionStorage()
+    })
+}
+
+function initForm (blocks) {
     blocks.forEach(block => generator.innerHTML += block)
 }
 
-function formData (form = {}) {
+function formData (localStorage = true, form = {}) {
     const blocksAll = generator.children
 
     for (let i = 0; i < blocksAll.length; i++) {
@@ -74,11 +94,19 @@ function formData (form = {}) {
                 value = blocksAll[i].children[j].value
             }            
         }
-        form[key] = value
+        if (localStorage) {
+            form[key] = ''
+        } else {
+            form[key] = value
+        }
     }
     return form
 }
 
 function saveFormInLocalStorage () {
     localStorage.setItem('dynamic-form', JSON.stringify(formData()))
+}
+
+function saveFormInSessionStorage () {
+    sessionStorage.setItem('dynamic-form-session', JSON.stringify(formData(false)))
 }
