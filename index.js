@@ -5,38 +5,58 @@ const generator = document.getElementById('generator')
 const generateBlock = document.getElementById('btn-generate')
 const jsonPlaceholder = document.getElementById('json')
 const copyBtn = document.getElementById('copy')
+const saveBtn = document.getElementById('save-local')
 
 // colorize key and value - Miskova ideja
 
-const block = (num, key, value) => `
-    <div class="form-group" data-block="block_${num}">
-        <span class="remove-block float-right">✕</span>
-        <div id="label_${num}" class="pl-1 m-1 mr-5" contentEditable="true">${key ?? 'Key ' + (num + 1)}</div>
-        <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" value="${value ?? ''}" placeholder="Enter value" autocomplete="off">
-    </div>
-`
-let blocks = [block(0, 'Key 1'), block(1, 'Key 2')]
+const block = (num, key, value) => {
+    key = key ?? 'Key-' + (num + 1)
+    value = value ?? ''
 
-const formSavedInLocalStorage = JSON.parse(localStorage.getItem('dynamic-form'))
-const formSavedInSessionStorage = JSON.parse(sessionStorage.getItem('dynamic-form-session'))
-const formSaved = formSavedInSessionStorage || formSavedInLocalStorage
+    return `
+        <div class="form-group">
+            <span class="remove-block float-right">✕</span>
+            <div id="label_${num}" class="pl-1 m-1 mr-5" contentEditable="true">${key}</div>
+            <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" value="${value}" placeholder="Enter value" autocomplete="off">
+        </div>
+    `
+}
+
+let blocks = [block(0), block(1)]
+const formSaved = initFormSaved()
+
+function initFormSaved () {
+    const formSavedInLocalStorage = JSON.parse(localStorage.getItem('dynamic-form'))
+    const formSavedInSessionStorage = JSON.parse(sessionStorage.getItem('dynamic-form-session'))
+    return formSavedInSessionStorage ?? formSavedInLocalStorage
+}
 
 if (formSaved) {
+    blocks = getSavedForm()
+    initForm(blocks)
+    saveFormInSessionStorage()
+} else {
+    initForm(blocks)
+    saveFormInSessionStorage()
+}
+
+function getSavedForm () {
     let counter = 0
     blocks = []
     for (const prop in formSaved) {
         blocks.push(block(counter, prop, formSaved[prop]))
         counter++
     }
-    saveFormInSessionStorage()
-} else {
-    saveFormInLocalStorage()
+    return blocks
 }
 
 generateBlock.addEventListener('click', () => {
-    blocks.push(block(blocks.length))
-    generator.innerHTML += block(blocks.length - 1)
-    saveFormInLocalStorage()
+    // if (formSaved) {
+    //     blocks = getSavedForm()
+    // }
+    // blocks.push(block(blocks.length))
+    generator.innerHTML += block(blocks.length + 1)
+    // saveFormInSessionStorage()
 })
 
 formEl.addEventListener('submit', event => {
@@ -63,19 +83,23 @@ generator.addEventListener('click', event => {
             onBlur(event.target)
             break
         case 'INPUT':
-            onBlur(event.target, false)
+            onBlur(event.target)
             break
         case 'SPAN':
-            console.log('remove block')
+            event.target.parentElement.remove()
+            saveFormInSessionStorage()
             break
     }
 })
 
-function onBlur (elem, localStorage = true) {
+saveBtn.addEventListener('click', () => {
+    saveFormInLocalStorage()
+})
+
+
+
+function onBlur (elem) {
     elem.addEventListener('blur', () => {
-        if (localStorage) {
-            saveFormInLocalStorage()
-        }
         saveFormInSessionStorage()
     })
 }
@@ -105,12 +129,12 @@ function initForm (blocks) {
     blocks.forEach(block => generator.innerHTML += block)
 }
 
-function saveFormInLocalStorage () {
-    initForm(blocks)
-    localStorage.setItem('dynamic-form', JSON.stringify(formData()))
+function saveFormInSessionStorage () {
+    const data = formData(false)
+    sessionStorage.setItem('dynamic-form-session', JSON.stringify(data))
 }
 
-function saveFormInSessionStorage () {
-    initForm(blocks)
-    sessionStorage.setItem('dynamic-form-session', JSON.stringify(formData(false)))
+function saveFormInLocalStorage () {
+    const data = formData()
+    localStorage.setItem('dynamic-form', JSON.stringify(data))
 }

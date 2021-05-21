@@ -12,14 +12,14 @@
         }
         .remove-block {
             cursor: pointer;
-            padding: 5px 6px;
+            padding: 4px 5px;
             line-height: 1;
             border-radius: 20px;
             transition: background-color 0.2s, color 0.1s;
         }
         .remove-block:hover {
             color: #fff;
-            background-color: rgb(255, 79, 79);
+            background-color: rgb(255, 169, 169);
         }
         #json {
             resize: none;
@@ -46,6 +46,7 @@
     <div class="container col-lg-10 col-xl-6">
         <div class="card m-4">
             <div class="card-header">
+                <button id="save-local" class="btn btn-success float-right mt-2">Save</button>
                 <h3>Dynamic form</h3>
                 <p class="card-text">Keys are editable, too.</p>
             </div>
@@ -53,7 +54,7 @@
                 <form id="dynamic-form">
                     <div id="generator"></div>
                     <div class="button-wrapper mt-4">
-                        <button type="button" class="btn btn-success" id="btn-generate">Add +</button>
+                        <button type="button" class="btn btn-secondary" id="btn-generate">Add +</button>
                         <button type="submit" class="btn btn-primary">Generate JSON</button>
                     </div>
                 </form>
@@ -64,6 +65,7 @@
                 </div>
             </div>
             <div class="card-footer">
+                <button onclick="sessionStorage.clear()">Delete Session</button>
                 <p class="card-text">Something about the form.</p>
             </div>
         </div>
