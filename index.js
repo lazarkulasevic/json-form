@@ -23,6 +23,7 @@ const block = (num, key, value) => {
 }
 
 let blocks = [block(0), block(1)]
+let blocksNum = blocks.length
 const formSaved = initFormSaved()
 
 function initFormSaved () {
@@ -50,13 +51,14 @@ function getSavedForm () {
     return blocks
 }
 
+
 generateBlock.addEventListener('click', () => {
-    // if (formSaved) {
-    //     blocks = getSavedForm()
-    // }
-    // blocks.push(block(blocks.length))
-    generator.innerHTML += block(blocks.length + 1)
-    // saveFormInSessionStorage()
+    blocksNum = generator.children.length
+    const newBlock = document.createElement('div')
+    newBlock.innerHTML = block(blocksNum).trim('').slice(24, -6).trim()
+    generator.appendChild(newBlock)
+    blocksNum++
+    saveFormInSessionStorage()
 })
 
 formEl.addEventListener('submit', event => {
@@ -80,10 +82,10 @@ copyBtn.addEventListener('click', () => {
 generator.addEventListener('click', event => {
     switch (event.target.tagName) {
         case 'DIV':
-            onBlur(event.target)
+            saveOnBlur(event.target)
             break
         case 'INPUT':
-            onBlur(event.target)
+            saveOnBlur(event.target)
             break
         case 'SPAN':
             event.target.parentElement.remove()
@@ -98,7 +100,7 @@ saveBtn.addEventListener('click', () => {
 
 
 
-function onBlur (elem) {
+function saveOnBlur (elem) {
     elem.addEventListener('blur', () => {
         saveFormInSessionStorage()
     })
@@ -117,9 +119,9 @@ function formData (localStorage = true, form = {}) {
             }            
         }
         if (localStorage) {
-            form[slugify(key)] = ''
+            form[key] = ''
         } else {
-            form[slugify(key)] = value
+            form[key] = value
         }
     }
     return form
@@ -131,6 +133,7 @@ function initForm (blocks) {
 
 function saveFormInSessionStorage () {
     const data = formData(false)
+    console.log(data)
     sessionStorage.setItem('dynamic-form-session', JSON.stringify(data))
 }
 
