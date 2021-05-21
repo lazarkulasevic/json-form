@@ -1,8 +1,12 @@
+import slugify from './slugify.js'
+
 const formEl = document.getElementById('dynamic-form')
 const generator = document.getElementById('generator')
 const generateBlock = document.getElementById('btn-generate')
 const jsonPlaceholder = document.getElementById('json')
 const copyBtn = document.getElementById('copy')
+
+// colorize key and value - Miskova ideja
 
 const block = (num, key, value) => `
     <div class="form-group" data-block="block_${num}">
@@ -11,9 +15,11 @@ const block = (num, key, value) => `
         <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" value="${value ?? ''}" placeholder="Enter value" autocomplete="off">
     </div>
 `
-const formSaved = JSON.parse(localStorage.getItem('dynamic-form'))
-
 let blocks = [block(0, 'Key 1'), block(1, 'Key 2')]
+
+const formSavedInLocalStorage = JSON.parse(localStorage.getItem('dynamic-form'))
+const formSavedInSessionStorage = JSON.parse(sessionStorage.getItem('dynamic-form-session'))
+const formSaved = formSavedInSessionStorage || formSavedInLocalStorage
 
 if (formSaved) {
     let counter = 0
@@ -22,12 +28,8 @@ if (formSaved) {
         blocks.push(block(counter, prop, formSaved[prop]))
         counter++
     }
-
-    initForm(blocks)
     saveFormInSessionStorage()
-
 } else {
-    initForm(blocks)
     saveFormInLocalStorage()
 }
 
@@ -78,10 +80,6 @@ function onBlur (elem, localStorage = true) {
     })
 }
 
-function initForm (blocks) {
-    blocks.forEach(block => generator.innerHTML += block)
-}
-
 function formData (localStorage = true, form = {}) {
     const blocksAll = generator.children
 
@@ -95,18 +93,24 @@ function formData (localStorage = true, form = {}) {
             }            
         }
         if (localStorage) {
-            form[key] = ''
+            form[slugify(key)] = ''
         } else {
-            form[key] = value
+            form[slugify(key)] = value
         }
     }
     return form
 }
 
+function initForm (blocks) {
+    blocks.forEach(block => generator.innerHTML += block)
+}
+
 function saveFormInLocalStorage () {
+    initForm(blocks)
     localStorage.setItem('dynamic-form', JSON.stringify(formData()))
 }
 
 function saveFormInSessionStorage () {
+    initForm(blocks)
     sessionStorage.setItem('dynamic-form-session', JSON.stringify(formData(false)))
 }
