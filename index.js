@@ -44,7 +44,7 @@ generateBlock.addEventListener('click', () => {
 formEl.addEventListener('submit', event => {
     event.preventDefault()
     output.classList.remove('hide')
-    placeholderControl()
+    placeholderHeightControl()
     copyBtn.disabled = false
     minifyBtn.disabled = false
 })
@@ -58,7 +58,7 @@ jsonPlaceholder.addEventListener('blur', () => {
     saveJSONInSessionStorage()
     generator.innerHTML = ''
     initForm()
-    placeholderControl()
+    placeholderHeightControl()
 })
 
 copyBtn.addEventListener('click', () => {
@@ -138,7 +138,7 @@ function saveOnBlur (elem) {
     })
 }
 
-function placeholderControl () {
+function placeholderHeightControl () {
     const placeholders = [jsonWrapper, jsonPlaceholder, jsonHighlighted]
     const json = JSON.stringify(formData(), null, 2)
     jsonPlaceholder.value = json
