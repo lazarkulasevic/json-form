@@ -5,11 +5,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON Form</title>
+
+    <meta property="og:title" content="JSON Form">
+    <meta property="og:url" content="https://lazarkulasevic.github.io/json-form">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="JSON form built from scratch by Lazar Kulasevic, using HTML5, Bootstrap CSS & vanilla JavaScript.">
+    <meta property="og:image" content="https://lazarkulasevic.github.io/json-form/images/json-form-featured.png">
+
+    <meta name="twitter:title" content="JSON Form">
+    <meta name="twitter:description" content="JSON form built from scratch by Lazar Kulasevic, using HTML5, Bootstrap CSS & vanilla JavaScript.">
+    <meta name="twitter:image" content="https://lazarkulasevic.github.io/json-form/images/json-form-featured.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:creator" content="@knowsyo">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="d-flex align-items-center justify-content-center">
-    <div class="container col-lg-10 col-xl-6">
+    <div class="container col-lg-10 col-xl-6 p-2">
         <div class="card">
             <div class="card-header">
                 <button id="save-local" class="btn btn-success float-right mt-2">Save</button>
@@ -24,9 +37,9 @@
                         <button type="submit" class="btn btn-primary">Generate JSON</button>
                     </div>
                 </form>
-                <div class="pt-4">
+                <div class="output hide pt-4">
                     <div class="d-flex justify-content-between">
-                        <p class="mb-0 pt-3">JSON:</p>
+                        <p class="mb-0 pt-2">JSON:</p>
                         <button id="minify" class="btn btn-link mb-2" disabled>Minify</button>
                     </div>
                     <div class="json-wrapper">
@@ -36,9 +49,9 @@
                     <button id="copy" class="btn btn-outline-primary form-control mt-2" disabled>COPY JSON</button>
                 </div>
             </div>
-            <div class="card-footer">
-                <button id="reset" class="btn btn-outline-info float-right">Reset</button>
-                <p class="card-text">Something about the form.</p>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <p class="card-text m-0">Created with 🍦 JS by <a href="https://github.com/lazarkulasevic">Lazar Kulasevic</a>.</p>
+                <button id="reset" class="btn btn-outline-info">Reset</button>
             </div>
         </div>
     </div>

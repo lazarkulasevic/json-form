@@ -1,5 +1,5 @@
-import slugify from './slugify.js'
-import syntaxHighlight from './syntax-highlight.js'
+import slugify from './helpers/slugify.js'
+import syntaxHighlight from './helpers/syntax-highlight.js'
 
 const formEl = document.getElementById('dynamic-form')
 const generator = document.getElementById('generator')
@@ -7,6 +7,7 @@ const generateBlock = document.getElementById('btn-generate')
 const jsonPlaceholder = document.getElementById('json')
 const jsonHighlighted = document.getElementById('json-highlighted')
 const jsonWrapper = document.querySelector('.json-wrapper')
+const output = document.querySelector('.output')
 
 const copyBtn = document.getElementById('copy')
 const saveBtn = document.getElementById('save-local')
@@ -28,7 +29,6 @@ const block = (num, key, value) => {
 
 let blocks = [block(0), block(1)]
 let blocksNum = blocks.length
-// const formSaved = initFormSaved()
 
 initForm(blocks)
 
@@ -67,6 +67,7 @@ generateBlock.addEventListener('click', () => {
 
 formEl.addEventListener('submit', event => {
     event.preventDefault()
+    output.classList.remove('hide')
     placeholderControl()
     copyBtn.disabled = false
     minifyBtn.disabled = false
@@ -95,8 +96,6 @@ jsonPlaceholder.addEventListener('blur', () => {
     initForm()
     placeholderControl()
 })
-
-// meta tags - JOSN IMAGE cool something
 
 function saveJSONInSessionStorage () {
     const data = JSON.parse(jsonPlaceholder.value)
