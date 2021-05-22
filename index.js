@@ -88,7 +88,7 @@ generator.addEventListener('click', event => {
 
 saveBtn.addEventListener('click', () => {
     saveFormInLocalStorage()
-    alert('Form is saved in Local Storage.')
+    alert('Form keys are saved in Local Storage.')
 })
 
 minifyBtn.addEventListener('click', event => {
