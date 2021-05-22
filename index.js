@@ -7,9 +7,11 @@ const generateBlock = document.getElementById('btn-generate')
 const jsonPlaceholder = document.getElementById('json')
 const jsonHighlighted = document.getElementById('json-highlighted')
 const jsonWrapper = document.querySelector('.json-wrapper')
+
 const copyBtn = document.getElementById('copy')
 const saveBtn = document.getElementById('save-local')
 const minifyBtn = document.getElementById('minify')
+const resetBtn = document.getElementById('reset')
 
 const block = (num, key, value) => {
     key = key ?? 'Key-' + (num + 1)
@@ -29,9 +31,14 @@ let blocksNum = blocks.length
 const formSaved = initFormSaved()
 
 function initFormSaved () {
-    const formSavedInLocalStorage = JSON.parse(localStorage.getItem('dynamic-form'))
     const formSavedInSessionStorage = JSON.parse(sessionStorage.getItem('dynamic-form-session'))
+    const formSavedInLocalStorage = JSON.parse(localStorage.getItem('dynamic-form'))
     return formSavedInSessionStorage ?? formSavedInLocalStorage
+}
+
+function initForm (blocks) {
+    
+    blocks.forEach(block => generator.innerHTML += block)
 }
 
 if (formSaved) {
@@ -65,7 +72,6 @@ generateBlock.addEventListener('click', () => {
 formEl.addEventListener('submit', event => {
     event.preventDefault()
     const json = JSON.stringify(formData(), null, 4)
-
     jsonPlaceholder.value = json
     jsonHighlighted.innerHTML = syntaxHighlight(json)
     
@@ -77,6 +83,14 @@ formEl.addEventListener('submit', event => {
 
     copyBtn.disabled = false
     minifyBtn.disabled = false
+})
+
+jsonPlaceholder.addEventListener('focus', () => {
+    jsonHighlighted.classList.add('hide')
+})
+
+jsonPlaceholder.addEventListener('blur', () => {
+    jsonHighlighted.classList.remove('hide')
 })
 
 copyBtn.addEventListener('click', () => {
@@ -106,6 +120,7 @@ generator.addEventListener('click', event => {
 
 saveBtn.addEventListener('click', () => {
     saveFormInLocalStorage()
+    alert('Form is saved in Local Storage.')
 })
 
 minifyBtn.addEventListener('click', event => {
@@ -120,13 +135,18 @@ minifyBtn.addEventListener('click', event => {
     }
 })
 
+resetBtn.addEventListener('click', () => {
+    sessionStorage.clear()
+    location.reload()
+})
+
 function saveOnBlur (elem) {
     elem.addEventListener('blur', () => {
         saveFormInSessionStorage()
     })
 }
 
-function formData (localStorage = true, form = {}) {
+function formData (sessionStorage = true, form = {}) {
     const blocksAll = generator.children
 
     for (let i = 0; i < blocksAll.length; i++) {
@@ -139,25 +159,21 @@ function formData (localStorage = true, form = {}) {
                 value = blocksAll[i].children[j].value
             }            
         }
-        if (localStorage) {
-            form[key] = ''
-        } else {
+        if (sessionStorage) {
             form[key] = value
+        } else {
+            form[key] = ''
         }
     }
     return form
 }
 
-function initForm (blocks) {
-    blocks.forEach(block => generator.innerHTML += block)
-}
-
 function saveFormInSessionStorage () {
-    const data = formData(false)
+    const data = formData()
     sessionStorage.setItem('dynamic-form-session', JSON.stringify(data))
 }
 
 function saveFormInLocalStorage () {
-    const data = formData()
+    const data = formData(false)
     localStorage.setItem('dynamic-form', JSON.stringify(data))
 }
