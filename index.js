@@ -30,23 +30,13 @@ let blocks = [block(0), block(1)]
 let blocksNum = blocks.length
 const formSaved = initFormSaved()
 
-function initFormSaved () {
-    const formSavedInSessionStorage = JSON.parse(sessionStorage.getItem('dynamic-form-session'))
-    const formSavedInLocalStorage = JSON.parse(localStorage.getItem('dynamic-form'))
-    return formSavedInSessionStorage ?? formSavedInLocalStorage
-}
+initForm(blocks)
 
 function initForm (blocks) {
-    
+    if (formSaved) {
+        blocks = getSavedForm()
+    }
     blocks.forEach(block => generator.innerHTML += block)
-}
-
-if (formSaved) {
-    blocks = getSavedForm()
-    initForm(blocks)
-    saveFormInSessionStorage()
-} else {
-    initForm(blocks)
     saveFormInSessionStorage()
 }
 
@@ -58,6 +48,12 @@ function getSavedForm () {
         counter++
     }
     return blocks
+}
+
+function initFormSaved () {
+    const formSavedInSessionStorage = JSON.parse(sessionStorage.getItem('dynamic-form-session'))
+    const formSavedInLocalStorage = JSON.parse(localStorage.getItem('dynamic-form'))
+    return formSavedInSessionStorage ?? formSavedInLocalStorage
 }
 
 generateBlock.addEventListener('click', () => {
