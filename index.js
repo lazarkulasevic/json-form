@@ -1,13 +1,15 @@
 import slugify from './slugify.js'
+import syntaxHighlight from './syntax-highlight.js'
 
 const formEl = document.getElementById('dynamic-form')
 const generator = document.getElementById('generator')
 const generateBlock = document.getElementById('btn-generate')
 const jsonPlaceholder = document.getElementById('json')
+const jsonHighlighted = document.getElementById('json-highlighted')
+const jsonWrapper = document.querySelector('.json-wrapper')
 const copyBtn = document.getElementById('copy')
 const saveBtn = document.getElementById('save-local')
-
-// colorize key and value - Miskova ideja
+const minifyBtn = document.getElementById('minify')
 
 const block = (num, key, value) => {
     key = key ?? 'Key-' + (num + 1)
@@ -51,7 +53,6 @@ function getSavedForm () {
     return blocks
 }
 
-
 generateBlock.addEventListener('click', () => {
     blocksNum = generator.children.length
     const newBlock = document.createElement('div')
@@ -63,10 +64,19 @@ generateBlock.addEventListener('click', () => {
 
 formEl.addEventListener('submit', event => {
     event.preventDefault()
-    const form = formData()
-    jsonPlaceholder.value = JSON.stringify(form)
+    const json = JSON.stringify(formData(), null, 4)
+
+    jsonPlaceholder.value = json
+    jsonHighlighted.innerHTML = syntaxHighlight(json)
+    
+    const placeholderHeight = jsonPlaceholder.scrollHeight + 'px'
+    const placeholders = [jsonWrapper, jsonPlaceholder, jsonHighlighted]
+    placeholders.forEach(placeholder => {
+        placeholder.style.height = placeholderHeight
+    })
+
     copyBtn.disabled = false
-    jsonPlaceholder.style.height = jsonPlaceholder.scrollHeight + 'px'
+    minifyBtn.disabled = false
 })
 
 copyBtn.addEventListener('click', () => {
@@ -98,7 +108,17 @@ saveBtn.addEventListener('click', () => {
     saveFormInLocalStorage()
 })
 
-
+minifyBtn.addEventListener('click', event => {
+    if (event.target.textContent === 'Minify') {
+        event.target.textContent = 'Beautify'
+        jsonPlaceholder.value = JSON.stringify(formData())
+        jsonHighlighted.classList.add('hide')
+    } else {
+        event.target.textContent = 'Minify'
+        jsonPlaceholder.value = JSON.stringify(formData(), null, 4)
+        jsonHighlighted.classList.remove('hide')
+    }
+})
 
 function saveOnBlur (elem) {
     elem.addEventListener('blur', () => {
@@ -113,8 +133,9 @@ function formData (localStorage = true, form = {}) {
         let key, value;
         for (let j = 0; j < blocksAll[i].children.length; j++) {
             if (j % 3 === 1) {
-                key = blocksAll[i].children[j].textContent
-            } else if (j % 3 === 2) {
+                key = slugify(blocksAll[i].children[j].textContent)
+            }
+            if (j % 3 === 2) {
                 value = blocksAll[i].children[j].value
             }            
         }
@@ -133,7 +154,6 @@ function initForm (blocks) {
 
 function saveFormInSessionStorage () {
     const data = formData(false)
-    console.log(data)
     sessionStorage.setItem('dynamic-form-session', JSON.stringify(data))
 }
 
