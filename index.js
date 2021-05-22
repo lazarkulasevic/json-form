@@ -28,19 +28,19 @@ const block = (num, key, value) => {
 
 let blocks = [block(0), block(1)]
 let blocksNum = blocks.length
-const formSaved = initFormSaved()
+// const formSaved = initFormSaved()
 
 initForm(blocks)
 
 function initForm (blocks) {
-    if (formSaved) {
-        blocks = getSavedForm()
+    if (initFormSaved()) {
+        blocks = getSavedForm(initFormSaved(), blocks)
     }
     blocks.forEach(block => generator.innerHTML += block)
     saveFormInSessionStorage()
 }
 
-function getSavedForm () {
+function getSavedForm (formSaved, blocks) {
     let counter = 0
     blocks = []
     for (const prop in formSaved) {
@@ -67,19 +67,22 @@ generateBlock.addEventListener('click', () => {
 
 formEl.addEventListener('submit', event => {
     event.preventDefault()
-    const json = JSON.stringify(formData(), null, 4)
-    jsonPlaceholder.value = json
-    jsonHighlighted.innerHTML = syntaxHighlight(json)
-    
-    const placeholderHeight = jsonPlaceholder.scrollHeight + 'px'
-    const placeholders = [jsonWrapper, jsonPlaceholder, jsonHighlighted]
-    placeholders.forEach(placeholder => {
-        placeholder.style.height = placeholderHeight
-    })
-
+    placeholderControl()
     copyBtn.disabled = false
     minifyBtn.disabled = false
 })
+
+function placeholderControl () {
+    const placeholders = [jsonWrapper, jsonPlaceholder, jsonHighlighted]
+    const json = JSON.stringify(formData(), null, 2)
+    jsonPlaceholder.value = json
+    jsonHighlighted.innerHTML = syntaxHighlight(json)
+
+    const placeholderHeight = jsonPlaceholder.scrollHeight + 'px'
+    placeholders.forEach(placeholder => {
+        placeholder.style.height = placeholderHeight
+    })
+}
 
 jsonPlaceholder.addEventListener('focus', () => {
     jsonHighlighted.classList.add('hide')
@@ -87,7 +90,18 @@ jsonPlaceholder.addEventListener('focus', () => {
 
 jsonPlaceholder.addEventListener('blur', () => {
     jsonHighlighted.classList.remove('hide')
+    saveJSONInSessionStorage()
+    generator.innerHTML = ''
+    initForm()
+    placeholderControl()
 })
+
+// meta tags - JOSN IMAGE cool something
+
+function saveJSONInSessionStorage () {
+    const data = JSON.parse(jsonPlaceholder.value)
+    sessionStorage.setItem('dynamic-form-session', JSON.stringify(data))
+}
 
 copyBtn.addEventListener('click', () => {
     jsonPlaceholder.select()
@@ -126,7 +140,7 @@ minifyBtn.addEventListener('click', event => {
         jsonHighlighted.classList.add('hide')
     } else {
         event.target.textContent = 'Minify'
-        jsonPlaceholder.value = JSON.stringify(formData(), null, 4)
+        jsonPlaceholder.value = JSON.stringify(formData(), null, 2)
         jsonHighlighted.classList.remove('hide')
     }
 })
