@@ -32,30 +32,6 @@ let blocksNum = blocks.length
 
 initForm(blocks)
 
-function initForm (blocks) {
-    if (initFormSaved()) {
-        blocks = getSavedForm(initFormSaved(), blocks)
-    }
-    blocks.forEach(block => generator.innerHTML += block)
-    saveFormInSessionStorage()
-}
-
-function getSavedForm (formSaved, blocks) {
-    let counter = 0
-    blocks = []
-    for (const prop in formSaved) {
-        blocks.push(block(counter, prop, formSaved[prop]))
-        counter++
-    }
-    return blocks
-}
-
-function initFormSaved () {
-    const formSavedInSessionStorage = JSON.parse(sessionStorage.getItem('dynamic-form-session'))
-    const formSavedInLocalStorage = JSON.parse(localStorage.getItem('dynamic-form'))
-    return formSavedInSessionStorage ?? formSavedInLocalStorage
-}
-
 generateBlock.addEventListener('click', () => {
     blocksNum = generator.children.length
     const newBlock = document.createElement('div')
@@ -73,18 +49,6 @@ formEl.addEventListener('submit', event => {
     minifyBtn.disabled = false
 })
 
-function placeholderControl () {
-    const placeholders = [jsonWrapper, jsonPlaceholder, jsonHighlighted]
-    const json = JSON.stringify(formData(), null, 2)
-    jsonPlaceholder.value = json
-    jsonHighlighted.innerHTML = syntaxHighlight(json)
-
-    const placeholderHeight = jsonPlaceholder.scrollHeight + 'px'
-    placeholders.forEach(placeholder => {
-        placeholder.style.height = placeholderHeight
-    })
-}
-
 jsonPlaceholder.addEventListener('focus', () => {
     jsonHighlighted.classList.add('hide')
 })
@@ -96,11 +60,6 @@ jsonPlaceholder.addEventListener('blur', () => {
     initForm()
     placeholderControl()
 })
-
-function saveJSONInSessionStorage () {
-    const data = JSON.parse(jsonPlaceholder.value)
-    sessionStorage.setItem('dynamic-form-session', JSON.stringify(data))
-}
 
 copyBtn.addEventListener('click', () => {
     jsonPlaceholder.select()
@@ -149,9 +108,45 @@ resetBtn.addEventListener('click', () => {
     location.reload()
 })
 
+function initForm (blocks) {
+    if (initFormSaved()) {
+        blocks = getSavedForm(initFormSaved(), blocks)
+    }
+    blocks.forEach(block => generator.innerHTML += block)
+    saveFormInSessionStorage()
+}
+
+function getSavedForm (formSaved, blocks) {
+    let counter = 0
+    blocks = []
+    for (const prop in formSaved) {
+        blocks.push(block(counter, prop, formSaved[prop]))
+        counter++
+    }
+    return blocks
+}
+
+function initFormSaved () {
+    const formSavedInSessionStorage = JSON.parse(sessionStorage.getItem('dynamic-form-session'))
+    const formSavedInLocalStorage = JSON.parse(localStorage.getItem('dynamic-form'))
+    return formSavedInSessionStorage ?? formSavedInLocalStorage
+}
+
 function saveOnBlur (elem) {
     elem.addEventListener('blur', () => {
         saveFormInSessionStorage()
+    })
+}
+
+function placeholderControl () {
+    const placeholders = [jsonWrapper, jsonPlaceholder, jsonHighlighted]
+    const json = JSON.stringify(formData(), null, 2)
+    jsonPlaceholder.value = json
+    jsonHighlighted.innerHTML = syntaxHighlight(json)
+
+    const placeholderHeight = jsonPlaceholder.scrollHeight + 'px'
+    placeholders.forEach(placeholder => {
+        placeholder.style.height = placeholderHeight
     })
 }
 
@@ -175,6 +170,11 @@ function formData (sessionStorage = true, form = {}) {
         }
     }
     return form
+}
+
+function saveJSONInSessionStorage () {
+    const data = JSON.parse(jsonPlaceholder.value)
+    sessionStorage.setItem('dynamic-form-session', JSON.stringify(data))
 }
 
 function saveFormInSessionStorage () {
