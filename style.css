@@ -63,21 +63,6 @@ body {
   color: #e5f83b;
 }
 
-@media (min-width: 576px) {
-  .button-wrapper {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-            justify-content: space-between;
-  }
-  .button-wrapper button {
-    width: unset;
-    margin-bottom: 0;
-  }
-}
-
 .card {
   position: relative;
   background-color: var(--light);
@@ -101,5 +86,106 @@ body {
           filter: blur(4px);
   opacity: 0.4;
   z-index: -1;
+}
+
+.block {
+  -webkit-animation: scale-display 0.3s;
+          animation: scale-display 0.3s;
+}
+
+.block.removed {
+  -webkit-animation: scale-display--reversed 0.3s;
+          animation: scale-display--reversed 0.3s;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+
+@media (min-width: 576px) {
+  .button-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+  }
+  .button-wrapper button {
+    width: unset;
+    margin-bottom: 0;
+  }
+}
+
+@-webkit-keyframes scale-display {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+    -webkit-transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    -webkit-transform: scale(1);
+  }
+}
+
+@keyframes scale-display {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+    -webkit-transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    -webkit-transform: scale(1);
+  }
+}
+
+@-webkit-keyframes scale-display--reversed {
+  0% {
+    display: -webkit-inline-box;
+    display: inline-flex;
+    opacity: 1;
+    transform: scale(1);
+    -webkit-transform: scale(1);
+  }
+  99% {
+    display: -webkit-inline-box;
+    display: inline-flex;
+    opacity: 0;
+    transform: scale(0);
+    -webkit-transform: scale(0);
+  }
+  100% {
+    display: none;
+    opacity: 0;
+    transform: scale(0);
+    -webkit-transform: scale(0);
+  }
+}
+
+@keyframes scale-display--reversed {
+  0% {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    opacity: 1;
+    transform: scale(1);
+    -webkit-transform: scale(1);
+  }
+  99% {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    opacity: 0;
+    transform: scale(0);
+    -webkit-transform: scale(0);
+  }
+  100% {
+    display: none;
+    opacity: 0;
+    transform: scale(0);
+    -webkit-transform: scale(0);
+  }
 }
 /*# sourceMappingURL=style.css.map */

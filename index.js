@@ -19,7 +19,7 @@ const block = (num, key, value) => {
     value = value ?? ''
 
     return `
-        <div class="form-group">
+        <div class="form-group block">
             <span class="remove-block float-right">✕</span>
             <div id="label_${num}" class="pl-1 m-1 mr-5" contentEditable="true">${key}</div>
             <input id="input_${num}" type="text" class="form-control" aria-describedby="Name" value="${value}" placeholder="Enter value" autocomplete="off">
@@ -35,7 +35,8 @@ initForm(blocks)
 generateBlock.addEventListener('click', () => {
     blocksNum = generator.children.length
     const newBlock = document.createElement('div')
-    newBlock.innerHTML = block(blocksNum).trim('').slice(24, -6).trim()
+    newBlock.setAttribute('class', 'form-group block')
+    newBlock.innerHTML = block(blocksNum).trim('').slice(30, -6).trim()
     generator.appendChild(newBlock)
     blocksNum++
     saveFormInSessionStorage()
@@ -80,7 +81,10 @@ generator.addEventListener('click', event => {
             saveOnBlur(event.target)
             break
         case 'SPAN':
-            event.target.parentElement.remove()
+            event.target.parentElement.classList.add('removed')
+            setTimeout(() => {
+                event.target.parentElement.remove()
+            }, 300)
             saveFormInSessionStorage()
             break
     }
