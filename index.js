@@ -84,7 +84,7 @@ generator.addEventListener('click', event => {
             event.target.parentElement.classList.add('removed')
             setTimeout(() => {
                 event.target.parentElement.remove()
-            }, 300)
+            }, 240)
             saveFormInSessionStorage()
             break
     }
